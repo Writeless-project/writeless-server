@@ -1,12 +1,18 @@
+/* eslint no-console: 0 */
+
+/* libraries */
 const express = require('express');
-// const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
 
-// mongoose.connect('localhost:27017/writeless');
+/* local dependencies */
+const journalRoutes = require('./routes/journals');
+const userRoutes = require('./routes/users');
 
+/* Express setup */
 var app = express();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({
@@ -15,7 +21,12 @@ app.use(express.urlencoded({
 app.use(logger('dev'));
 
 
-/* TESTING routes */
+/* Routes */
+// ERROR I believe these 2 lines aren't valid with express 2.0+
+app.use('/journals', journalRoutes);
+app.use('/users', userRoutes);
+
+// TESTING don't keep this route
 app.use('/', (req, res) => {
     var obj = {
         'hello': 'world!'
@@ -24,11 +35,11 @@ app.use('/', (req, res) => {
 });
 
 
+/* start server */
 const port = process.env.PORT || '3000';
 app.set('port', port);
 const server = http.createServer(app);
 
-// Tell the server to start listening on the provided port
 server.listen(port, () => {
     console.log('API running on localhost: ' + port);
 });
